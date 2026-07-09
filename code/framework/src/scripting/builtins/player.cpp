@@ -53,6 +53,11 @@ namespace Framework::Scripting::Builtins {
         return identity ? identity->steamId : "";
     }
 
+    std::string Player::GetEpicId() const {
+        const auto *identity = ResolveIdentity();
+        return identity ? identity->epicId : "";
+    }
+
     std::string Player::GetDiscordId() const {
         const auto *identity = ResolveIdentity();
         return identity ? identity->discordId : "";
@@ -216,6 +221,7 @@ namespace Framework::Scripting::Builtins {
             .function("getNametagColor", &Player::GetNametagColor,
                 v8pp::metadata::docs("number", {}, "Reads this player's nametag color.", "Packed 0xAARRGGBB color; opaque white when untinted."))
             .property("steamId", &Player::GetSteamId, v8pp::metadata::property_docs("string", "Authenticated Steam identifier, or an empty string when unavailable."))
+            .property("epicId", &Player::GetEpicId, v8pp::metadata::property_docs("string", "Authenticated Epic Games account identifier, or an empty string when unavailable."))
             .property("discordId", &Player::GetDiscordId, v8pp::metadata::property_docs("string", "Authenticated Discord identifier, or an empty string when unavailable."))
             .property("hardwareId", &Player::GetHardwareId, v8pp::metadata::property_docs("string", "Framework hardware identifier, or an empty string when unavailable."))
             .property("ping", &Player::GetPing, v8pp::metadata::property_docs("number", "Current round-trip latency in milliseconds, or -1 when unavailable."))

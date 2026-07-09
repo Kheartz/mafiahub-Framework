@@ -487,14 +487,17 @@ namespace Framework::Integrations::Server {
             if (identity.name.size() > 64) {
                 identity.name.resize(64);
             }
-            const auto digits = [](std::string &value, size_t max) {
-                if (value.size() > max || value.find_first_not_of("0123456789") != std::string::npos) {
+            // Client-reported and unverified: just cap length + charset so nothing absurd is stored.
+            // steam/discord/hwid are decimal; the Epic account id is <=32 hex.
+            const auto sanitize = [](std::string &value, size_t max, const char *allowed) {
+                if (value.size() > max || value.find_first_not_of(allowed) != std::string::npos) {
                     value.clear();
                 }
             };
-            digits(identity.steamId, 32);
-            digits(identity.discordId, 32);
-            digits(identity.hardwareId, 128);
+            sanitize(identity.steamId, 32, "0123456789");
+            sanitize(identity.discordId, 32, "0123456789");
+            sanitize(identity.hardwareId, 128, "0123456789");
+            sanitize(identity.epicId, 32, "0123456789abcdefABCDEF");
             net->SetPeerIdentity(guid, identity);
 
             Logging::GetLogger(FRAMEWORK_INNER_SERVER)->info("Player {} guid {} hwid {}", identity.name, guid.g, identity.hardwareId);
@@ -507,6 +510,7 @@ namespace Framework::Integrations::Server {
             data.nickname    = identity.name;
             data.hardwareID  = identity.hardwareId;
             data.steamId     = identity.steamId;
+            data.epicId      = identity.epicId;
             data.discordId   = identity.discordId;
             OnPlayerConnect(data);
 

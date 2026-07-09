@@ -22,12 +22,16 @@ namespace Framework::Networking::RPC {
         std::string steamId;
         std::string discordId;
         std::string hardwareId;
+        // Appended, not inserted: an older client sends four fields, so epicId underflows to empty
+        // rather than shifting the other ids into each other's slots.
+        std::string epicId;
 
         void Serialize(MafiaNet::BitStream *bs, bool write) {
             bs->Serialize(write, name);
             bs->Serialize(write, steamId);
             bs->Serialize(write, discordId);
             bs->Serialize(write, hardwareId);
+            bs->Serialize(write, epicId);
         }
     };
 } // namespace Framework::Networking::RPC

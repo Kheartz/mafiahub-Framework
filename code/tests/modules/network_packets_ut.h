@@ -81,6 +81,7 @@ MODULE(network_packets, {
         out.steamId    = "steam-1";
         out.discordId  = "discord-2";
         out.hardwareId = "hw-3";
+        out.epicId     = "epic-4";
 
         MafiaNet::BitStream bs;
         out.Serialize(&bs, true);
@@ -89,6 +90,7 @@ MODULE(network_packets, {
         STREQUALS(in.steamId.c_str(), "steam-1");
         STREQUALS(in.discordId.c_str(), "discord-2");
         STREQUALS(in.hardwareId.c_str(), "hw-3");
+        STREQUALS(in.epicId.c_str(), "epic-4");
     });
 
     IT("round-trips a ServerResources payload with a resource list", {

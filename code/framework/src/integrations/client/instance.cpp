@@ -1039,16 +1039,19 @@ namespace Framework::Integrations::Client {
 
             const auto serverGuid = net->GetPeer()->GetGUIDFromIndex(0);
 
-            // Launcher-set when the game was located through Steam; Win32 read, the CRT's getenv
-            // copy predates it.
+            // Launcher-set when the game was located through Steam / authenticated through Epic;
+            // Win32 read, the CRT's getenv copy predates it.
             char steamId[32] = {};
+            char epicId[33]  = {}; // EOS account id: 32 hex chars + null
 #ifdef _WIN32
             GetEnvironmentVariableA("MafiaHubSteamId", steamId, sizeof(steamId));
+            GetEnvironmentVariableA("MafiaHubEpicId", epicId, sizeof(epicId));
 #endif
 
             Framework::Networking::RPC::ClientIdentity identity;
             identity.name       = _currentState.nickname;
             identity.steamId    = steamId;
+            identity.epicId     = epicId;
             identity.discordId  = _presence ? _presence->GetUserId() : "";
             identity.hardwareId = Framework::Utils::GetHardwareId();
             net->SendRPC(identity, serverGuid);
